@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - name: Install dependencies
@@ -51,9 +51,9 @@ jobs:
     needs: check
     steps:
       - name: Clone the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install GoLang
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
       - name: Download dependencies
         run: |
           cd back-end
@@ -73,7 +73,7 @@ jobs:
         run: |
           buildah push ${{ steps.build-image.outputs.image }} oci-archive:backend.tar:${{ env.BE_IMAGE_NAME }}:testing
       - name: Upload Image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend
           path: backend.tar
@@ -83,7 +83,7 @@ jobs:
     needs: build-back-end
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         id: download
         with:
           name: backend
@@ -107,10 +107,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone the repository
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: |
             front-end/package-lock.json
@@ -131,7 +131,7 @@ jobs:
         run: |
           buildah push ${{ steps.build-image.outputs.image }} oci-archive:frontend.tar:${{ env.FE_IMAGE_NAME }}:testing
       - name: Upload Image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend
           path: frontend.tar
@@ -142,7 +142,7 @@ jobs:
     needs: build-front-end
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         id: download
         with:
           name: frontend
@@ -173,7 +173,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         id: download
         with:
           path: artifacts/
@@ -199,7 +199,7 @@ jobs:
           tags: latest ${{ github.sha }}
           registry: ${{ env.REGISTRY }}
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - name: Install dependencies
