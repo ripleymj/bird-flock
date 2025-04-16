@@ -8,14 +8,14 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: birds-app-front-end-ripleymj
+      app: birds-app-front-end-lam2mo
   template:
     metadata:
       labels:
-        app: birds-app-front-end-ripleymj
+        app: birds-app-front-end-lam2mo
     spec:
       containers:
-        - image: 'ghcr.io/ripleymj/birds-app-front-end:447a697a83d7b66588c46b07181086a2bfd0ff79'
+        - image: 'ghcr.io/lam2mo/birds-app-front-end:9185f8187fb490a5b5dd313a8d81b836399db78b'
           name: birds-app-front-end
           ports:
             - containerPort: 80
