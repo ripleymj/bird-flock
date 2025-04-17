@@ -2,7 +2,6 @@ name: Build Birds App
 env:
   FE_IMAGE_NAME: birds-app-front-end
   BE_IMAGE_NAME: birds-app-back-end
-  REGISTRY: ghcr.io/${{ github.actor }}
 on:
   push:
     paths-ignore:
@@ -165,13 +164,17 @@ jobs:
     needs: [test-front-end, test-back-end]
     runs-on: ubuntu-latest
     steps:
+      - name: lowercase username
+        run: |
+          echo "username=${GITHUB_ACTOR@L}" >> "${GITHUB_ENV}"
+          echo "registry=ghcr.io/${GITHUB_ACTOR@L}" >> "${GITHUB_ENV}"
       - name: Clone the repository
         uses: actions/checkout@v2
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          registry: ${{ env.registry }}
+          username: ${{ env.username }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/download-artifact@v4
         id: download
@@ -191,13 +194,13 @@ jobs:
         with:
           image: ${{ env.FE_IMAGE_NAME }}
           tags: latest ${{ github.sha }}
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.registry }}
       - name: Push back-end to GitHub Container Repository
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ env.BE_IMAGE_NAME }}
           tags: latest ${{ github.sha }}
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.registry }}
       - name: Set up Python 3.x
         uses: actions/setup-python@v5
         with:
@@ -216,7 +219,6 @@ jobs:
           jinjanate templates/ingress-front-end.yaml.j2 > k8s/ingress-front-end.yaml
         env:
           version: ${{ github.sha }}
-          username: ${{ github.actor }}
       - run: |
           git config --global user.email "bot@jmunixusers.org"
           git config --global user.name "UUG Bot"
